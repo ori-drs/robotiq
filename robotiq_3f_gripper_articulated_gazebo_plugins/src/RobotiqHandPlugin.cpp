@@ -28,12 +28,6 @@
 #include <gazebo/physics/physics.hh>
 #include <robotiq_3f_gripper_articulated_gazebo_plugins/RobotiqHandPlugin.h>
 
-// Default topic names initialization.
-const std::string RobotiqHandPlugin::DefaultLeftTopicCommand = "/left_hand/command";
-const std::string RobotiqHandPlugin::DefaultLeftTopicState = "/left_hand/state";
-const std::string RobotiqHandPlugin::DefaultRightTopicCommand = "/right_hand/command";
-const std::string RobotiqHandPlugin::DefaultRightTopicState = "/right_hand/state";
-
 ////////////////////////////////////////////////////////////////////////////////
 RobotiqHandPlugin::RobotiqHandPlugin()
 {
@@ -70,21 +64,11 @@ void RobotiqHandPlugin::Load(gazebo::physics::ModelPtr _parent, sdf::ElementPtr 
     this->world = this->model->GetWorld();
     this->sdf = _sdf;
 
-    if (!this->sdf->HasElement("side") || !this->sdf->GetElement("side")->GetValue()->Get(this->side) ||
-        ((this->side != "left") && (this->side != "right")))
+    if (this->sdf->HasElement("prefix"))
     {
-        gzerr << "Failed to determine which hand we're controlling; "
-                 "aborting plugin load. <Side> should be either 'left' or 'right'."
-              << std::endl;
-        return;
+        this->sdf->GetElement("prefix")->GetValue()->Get(this->prefix);
     }
-
-    // Load the vector of all joints.
-    std::string prefix;
-    if (this->side == "left")
-        prefix = "l_";
-    else
-        prefix = "r_";
+    gzlog << "Launching with prefix '" << this->prefix << "'" << std::endl;
 
     // Load the vector of all joints.
     if (!this->FindJoints())
@@ -106,15 +90,10 @@ void RobotiqHandPlugin::Load(gazebo::physics::ModelPtr _parent, sdf::ElementPtr 
     }
     gzlog << "Initialized the joint state vector" << std::endl;
 
-    // Default ROS topic names.
-    std::string controlTopicName = this->DefaultLeftTopicCommand;
-    std::string stateTopicName = this->DefaultLeftTopicState;
-    if (this->side == "right")
-    {
-        controlTopicName = this->DefaultRightTopicCommand;
-        stateTopicName = this->DefaultRightTopicState;
-    }
-    gzlog << "Using control topic " << controlTopicName << std::endl;
+    // ROS topic names.
+    this->topicCommand = prefix + std::string("hand/command");
+    this->topicState = prefix + std::string("hand/state");
+    gzlog << "Using control topic " << this->topicCommand << std::endl;
 
     for (int i = 0; i < this->NumJoints; ++i)
     {
@@ -144,10 +123,10 @@ void RobotiqHandPlugin::Load(gazebo::physics::ModelPtr _parent, sdf::ElementPtr 
 
     // Overload the ROS topics for the hand if they are available.
     if (this->sdf->HasElement("topic_command"))
-        controlTopicName = this->sdf->Get<std::string>("topic_command");
+        this->topicCommand = this->sdf->Get<std::string>("topic_command");
 
     if (this->sdf->HasElement("topic_state"))
-        stateTopicName = this->sdf->Get<std::string>("topic_state");
+        this->topicState = this->sdf->Get<std::string>("topic_state");
 
     // Initialize ROS.
     if (!ros::isInitialized())
@@ -167,18 +146,17 @@ void RobotiqHandPlugin::Load(gazebo::physics::ModelPtr _parent, sdf::ElementPtr 
     // Broadcasts state.
     this->pubHandleStateQueue = this->pmq.addPub<robotiq_3f_gripper_articulated_msgs::Robotiq3FGripperRobotInput>();
     this->pubHandleState = this->rosNode->advertise<robotiq_3f_gripper_articulated_msgs::Robotiq3FGripperRobotInput>(
-        stateTopicName, 100, true);
+        this->topicState, 100, true);
 
     // Broadcast joint state.
-    std::string topicBase = std::string("robotiq_hands/") + this->side;
     this->pubJointStatesQueue = this->pmq.addPub<sensor_msgs::JointState>();
     this->pubJointStates =
-        this->rosNode->advertise<sensor_msgs::JointState>(topicBase + std::string("_hand/joint_states"), 10);
+        this->rosNode->advertise<sensor_msgs::JointState>(this->prefix + std::string("hand/joint_states"), 10);
 
     // Subscribe to user published handle control commands.
     ros::SubscribeOptions handleCommandSo =
         ros::SubscribeOptions::create<robotiq_3f_gripper_articulated_msgs::Robotiq3FGripperRobotOutput>(
-            controlTopicName, 100, boost::bind(&RobotiqHandPlugin::SetHandleCommand, this, _1), ros::VoidPtr(),
+            this->topicCommand, 100, boost::bind(&RobotiqHandPlugin::SetHandleCommand, this, _1), ros::VoidPtr(),
             &this->rosQueue);
 
     // Enable TCP_NODELAY since TCP causes bursty communication with high jitter.
@@ -200,7 +178,7 @@ void RobotiqHandPlugin::Load(gazebo::physics::ModelPtr _parent, sdf::ElementPtr 
         gazebo::event::Events::ConnectWorldUpdateBegin(boost::bind(&RobotiqHandPlugin::UpdateStates, this));
 
     // Log information.
-    gzlog << "RobotiqHandPlugin loaded for " << this->side << " hand." << std::endl;
+    gzlog << "RobotiqHandPlugin loaded with prefix " << this->prefix << std::endl;
     for (int i = 0; i < this->NumJoints; ++i)
     {
         gzlog << "Position PID parameters for joint [" << this->fingerJoints[i]->GetName() << "]:" << std::endl
@@ -213,8 +191,8 @@ void RobotiqHandPlugin::Load(gazebo::physics::ModelPtr _parent, sdf::ElementPtr 
               << "\tCmdMax: " << this->posePID[i].GetCmdMax() << std::endl
               << std::endl;
     }
-    gzlog << "Topic for sending hand commands: [" << controlTopicName << "]\nTopic for receiving hand state: ["
-          << stateTopicName << "]" << std::endl;
+    gzlog << "Topic for sending hand commands: [" << this->topicCommand << "]\nTopic for receiving hand state: ["
+          << this->topicState << "]" << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -795,12 +773,8 @@ bool RobotiqHandPlugin::FindJoints()
 {
     // Load up the joints we expect to use, finger by finger.
     gazebo::physics::JointPtr joint;
-    std::string prefix;
+    std::string prefix = this->prefix;
     std::string suffix;
-    if (this->side == "left")
-        prefix = "l_";
-    else
-        prefix = "r_";
 
     // palm_finger_1_joint (actuated).
     suffix = "palm_finger_1_joint";
@@ -890,7 +864,7 @@ bool RobotiqHandPlugin::FindJoints()
         return false;
     this->jointNames.push_back(prefix + suffix);
 
-    gzlog << "RobotiqHandPlugin found all joints for " << this->side << " hand." << std::endl;
+    gzlog << "RobotiqHandPlugin found all joints for hand with prefix " << this->prefix << std::endl;
     return true;
 }
 
