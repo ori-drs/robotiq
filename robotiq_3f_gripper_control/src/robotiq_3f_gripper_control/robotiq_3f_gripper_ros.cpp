@@ -130,6 +130,7 @@ bool Robotiq3FGripperROS::handleEmergRelease(std_srvs::TriggerRequest& req, std_
     driver_->setEmergencyRelease(EMERGENCY_RELEASE_IDLE);
     resp.success = true;
     resp.message += "Emergency release complete. ";
+    return true;
 }
 
 bool Robotiq3FGripperROS::handleShutdown(std_srvs::TriggerRequest& req, std_srvs::TriggerResponse& resp)
