@@ -45,7 +45,7 @@
 
 // Platform specific
 #ifdef __unix__ /*For Unix*/
-#define _BSD_SOURCE
+#define _DEFAULT_SOURCE
 #include <termios.h>
 #include <unistd.h>
 #elif defined(_WIN32) || defined(WIN32) /*For Windows*/
