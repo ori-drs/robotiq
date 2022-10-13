@@ -64,7 +64,7 @@ Robotiq3FGripperHWInterface::Robotiq3FGripperHWInterface(ros::NodeHandle nh,
 void Robotiq3FGripperHWInterface::configure(hardware_interface::JointStateInterface& joint_state_interface,
                                             hardware_interface::PositionJointInterface& joint_position_interface)
 {
-    //! Connect and register jonit state interface
+    //! Connect and register joint state interface
     for (std::size_t joint_id = 0; joint_id < 4; ++joint_id)
     {
         // Create joint state interface
