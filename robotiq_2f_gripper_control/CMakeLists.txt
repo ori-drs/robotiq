@@ -31,13 +31,18 @@ add_executable(robotiq_2f_gripper_ethercat_node
 target_link_libraries(robotiq_2f_gripper_ethercat_node
   ${robotiq_ethercat_LIBRARIES}
   ${catkin_LIBRARIES}
-
 )
 
 add_dependencies(robotiq_2f_gripper_ethercat_node robotiq_2f_gripper_control_generate_messages_cpp)
 
-install(PROGRAMS nodes/Robotiq2FGripperSimpleController.py nodes/Robotiq2FGripperStatusListener.py
-  nodes/Robotiq2FGripperTcpNode.py nodes/Robotiq2FGripperRtuNode.py DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+catkin_install_python(PROGRAMS
+  nodes/Robotiq2FGripperSimpleController.py
+  nodes/Robotiq2FGripperStatusListener.py
+  nodes/Robotiq2FGripperTcpNode.py
+  nodes/Robotiq2FGripperRtuNode.py
+  nodes/Robotiq2FGripperJointStatePublisher.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
