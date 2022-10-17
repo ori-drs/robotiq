@@ -88,7 +88,7 @@
             - The X axis traces a symmetric line centered on the connector; the positive direction
                 points the opposite way away from the connector.
             - The Y axis uses the right hand thumb rule according to X-Z. -->
-        <joint name="${prefix}measurment_joint" type="fixed">
+        <joint name="${prefix}measurement_joint" type="fixed">
             <origin xyz="0 0 0" rpy="0 ${pi} ${-pi/2}" />
             <parent link="${prefix}ft300_sensor" />
             <child link="${prefix}robotiq_ft_frame_id" />
