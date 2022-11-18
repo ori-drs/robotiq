@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:include filename="$(find robotiq_2f_140_gripper_visualization)/urdf/robotiq_arg2f_transmission.xacro" />
+  <xacro:include filename="$(find robotiq_2f_140_gripper_visualization)/urdf/robotiq_arg2f_gazebo.xacro" />
 
   <xacro:macro name="outer_knuckle" params="prefix fingerprefix stroke">
     <link name="${prefix}${fingerprefix}_outer_knuckle">
@@ -215,12 +216,15 @@
     <xacro:finger_joints prefix="${prefix}" fingerprefix="right" reflect="-1.0"/>
   </xacro:macro>
 
-  <xacro:macro name="robotiq_arg2f_140" params="prefix">
+  <xacro:macro name="robotiq_arg2f_140" params="prefix gazebo:=true">
     <xacro:robotiq_arg2f_base_link prefix="${prefix}"/>
     <xacro:finger_links prefix="${prefix}" fingerprefix="left" stroke="140"/>
     <xacro:finger_links prefix="${prefix}" fingerprefix="right" stroke="140"/>
     <xacro:finger_joint prefix="${prefix}"/>
     <xacro:right_outer_knuckle_joint prefix="${prefix}"/>
     <xacro:robotiq_arg2f_transmission prefix="${prefix}"/>
+    <xacro:if value="${gazebo}">
+      <xacro:robotiq_arg2f_gazebo prefix="${prefix}"/>
+    </xacro:if>
   </xacro:macro>
 </robot>

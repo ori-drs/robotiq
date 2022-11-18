@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<!-- Develped by: Daniel Ordonez 20.06.2019 - daniels.ordonez@gmail.com-->
+<!-- Developed by: Daniel Ordonez 20.06.2019 - daniels.ordonez@gmail.com-->
 
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="robotiq_fts150">
 
@@ -52,6 +52,9 @@
                 </geometry>
             </collision>
         </link>
+        <gazebo reference="${prefix}ft300_sensor">
+            <material>Gazebo/Black</material>
+        </gazebo>
 
         <!-- Link representing the FT300 mounting plate -->
         <link name="${prefix}ft300_mounting_plate">
@@ -74,6 +77,9 @@
                 </geometry>
             </collision>
         </link>
+        <gazebo reference="${prefix}ft300_mounting_plate">
+            <material>Gazebo/Black</material>
+        </gazebo>
 
          <!-- Connect force sensor with mounting/coupling plate -->
         <joint name="${prefix}ft300_mounting_plate_joint" type="fixed">

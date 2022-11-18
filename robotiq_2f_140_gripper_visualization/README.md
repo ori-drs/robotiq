@@ -1,6 +1,6 @@
 # Robotiq 140mm 2-Finger-Adaptive-Gripper
 
-This package contains the URDF files describing the 140mm stroke gripper from robotiq, also known as series **C3**.
+This package contains the URDF files describing the 140mm stroke gripper from Robotiq, also known as series **C3**.
 
 To test the gripper URDF description type
 
@@ -12,3 +12,6 @@ roslaunch robotiq_2f_140_gripper_visualization test_2f_140_model.launch
 
 ## Robot Collision
 ![1402](https://user-images.githubusercontent.com/8356912/49428407-463f8580-f7a6-11e8-9c4e-df69e478f107.png)
+
+## Simulation
+To simulate the mimic joints in Gazebo, please make sure to download and build the mimic joint plugin. The package is available here: https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins.git
