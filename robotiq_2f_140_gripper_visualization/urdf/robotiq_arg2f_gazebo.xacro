@@ -4,6 +4,7 @@
     <!-- Mimic joint -->
     <gazebo>
       <!-- Loading plugin for mimic joints. Requires: https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins.git -->
+      <!-- TODO: Replace with 2f_gripper_articulated_gazebo plugin, cf. https://github.com/ori-drs/robotiq/issues/1 -->
       <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="${prefix}mimic_robotiq_arg2f_4">
         <joint>${prefix}finger_joint</joint>
         <mimicJoint>${prefix}right_outer_knuckle_joint</mimicJoint>
