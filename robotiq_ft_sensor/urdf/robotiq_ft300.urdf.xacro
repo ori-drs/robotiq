@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<!-- Develped by: Daniel Ordonez 20.06.2019 - daniels.ordonez@gmail.com-->
+<!-- Developed by: Daniel Ordonez 20.06.2019 - daniels.ordonez@gmail.com-->
 
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="robotiq_fts150">
 
