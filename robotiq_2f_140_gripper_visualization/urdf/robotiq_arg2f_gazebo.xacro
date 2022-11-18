@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="robotiq_arg2f_gazebo" params="prefix mu1:=0.2 mu2:=0.2">
+    <!-- Mimic joint -->
+    <gazebo>
+      <!-- Loading plugin for mimic joints. Requires: https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins.git -->
+      <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="${prefix}mimic_robotiq_arg2f_4">
+        <joint>${prefix}finger_joint</joint>
+        <mimicJoint>${prefix}right_outer_knuckle_joint</mimicJoint>
+        <multiplier>-1.0</multiplier>
+      </plugin>
+      <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="${prefix}mimic_robotiq_arg2f_2">
+        <joint>${prefix}finger_joint</joint>
+        <mimicJoint>${prefix}left_inner_finger_joint</mimicJoint>
+        <multiplier>1.0</multiplier>
+      </plugin>
+      <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="${prefix}mimic_robotiq_arg2f_1">
+        <joint>${prefix}finger_joint</joint>
+        <mimicJoint>${prefix}right_inner_finger_joint</mimicJoint>
+        <multiplier>1.0</multiplier>
+      </plugin>
+      <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="${prefix}mimic_robotiq_arg2f_3">
+        <joint>${prefix}finger_joint</joint>
+        <mimicJoint>${prefix}left_inner_knuckle_joint</mimicJoint>
+        <multiplier>-1.0</multiplier>
+      </plugin>
+      <plugin filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so" name="${prefix}mimic_robotiq_arg2f_5">
+        <joint>${prefix}finger_joint</joint>
+        <mimicJoint>${prefix}right_inner_knuckle_joint</mimicJoint>
+        <multiplier>-1.0</multiplier>
+      </plugin>
+    </gazebo>
+
+    <!-- Materials -->
+    <gazebo reference="${prefix}robotiq_arg2f_base_link">
+      <mu1>${mu1}</mu1>
+      <mu2>${mu2}</mu2>
+      <material>Gazebo/Black</material>
+    </gazebo>
+
+    <gazebo reference="${prefix}left_outer_knuckle">
+      <mu1>${mu1}</mu1>
+      <mu2>${mu2}</mu2>
+      <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <gazebo reference="${prefix}left_inner_knuckle">
+      <mu1>${mu1}</mu1>
+      <mu2>${mu2}</mu2>
+      <material>Gazebo/Black</material>
+    </gazebo>
+
+    <gazebo reference="${prefix}left_outer_finger">
+      <mu1>${mu1}</mu1>
+      <mu2>${mu2}</mu2>
+      <material>Gazebo/Black</material>
+    </gazebo>
+
+    <gazebo reference="${prefix}left_inner_finger">
+      <mu1>${mu1}</mu1>
+      <mu2>${mu2}</mu2>
+      <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <gazebo reference="${prefix}left_inner_finger_pad">
+      <mu1>${mu1}</mu1>
+      <mu2>${mu2}</mu2>
+      <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <gazebo reference="${prefix}right_outer_knuckle">
+      <mu1>${mu1}</mu1>
+      <mu2>${mu2}</mu2>
+      <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <gazebo reference="${prefix}right_inner_knuckle">
+      <mu1>${mu1}</mu1>
+      <mu2>${mu2}</mu2>
+      <material>Gazebo/Black</material>
+    </gazebo>
+
+    <gazebo reference="${prefix}right_outer_finger">
+      <mu1>${mu1}</mu1>
+      <mu2>${mu2}</mu2>
+      <material>Gazebo/Black</material>
+    </gazebo>
+
+    <gazebo reference="${prefix}right_inner_finger">
+      <mu1>${mu1}</mu1>
+      <mu2>${mu2}</mu2>
+      <material>Gazebo/Grey</material>
+    </gazebo>
+
+    <gazebo reference="${prefix}right_inner_finger_pad">
+      <mu1>${mu1}</mu1>
+      <mu2>${mu2}</mu2>
+      <material>Gazebo/Grey</material>
+    </gazebo>
+  </xacro:macro>
+</robot>
