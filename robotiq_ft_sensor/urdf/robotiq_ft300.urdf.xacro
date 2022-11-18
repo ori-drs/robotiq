@@ -52,6 +52,9 @@
                 </geometry>
             </collision>
         </link>
+        <gazebo reference="${prefix}ft300_sensor">
+            <material>Gazebo/Black</material>
+        </gazebo>
 
         <!-- Link representing the FT300 mounting plate -->
         <link name="${prefix}ft300_mounting_plate">
@@ -74,6 +77,9 @@
                 </geometry>
             </collision>
         </link>
+        <gazebo reference="${prefix}ft300_mounting_plate">
+            <material>Gazebo/Black</material>
+        </gazebo>
 
          <!-- Connect force sensor with mounting/coupling plate -->
         <joint name="${prefix}ft300_mounting_plate_joint" type="fixed">
