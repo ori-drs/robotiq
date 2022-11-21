@@ -8,9 +8,9 @@ robotiq-3f-gripper_actuated_gazebo - actuated version of the robotiq robotiq-3f-
 
     <link name="world"/>
 
-    <robotiq_hand prefix="" parent="world" reflect="">
+    <xacro:robotiq_hand prefix="" parent="world" reflect="">
       <origin xyz="0 0 0.5" rpy="0 0 0"/>
-    </robotiq_hand>
+    </xacro:robotiq_hand>
 
   <gazebo>
     <!-- plugin for the RobotiQ hand -->
@@ -22,7 +22,6 @@ robotiq-3f-gripper_actuated_gazebo - actuated version of the robotiq robotiq-3f-
       <!-- This is chosen, so it's compatible with the "Robotiq3FGripperSimpleController.py"-->
       <topic_command>/Robotiq3FGripperRobotOutput</topic_command>
       <!-- <topic_state>/hand/state</topic_state> -->
-
     </plugin>
   </gazebo>
 </robot>
