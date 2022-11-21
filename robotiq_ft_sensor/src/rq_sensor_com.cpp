@@ -659,7 +659,8 @@ void rq_sensor_com_read_info_high_lvl(void)
     if (result != -1)
     {
         sprintf(rq_com_str_sensor_firmware_version, "%c%c%c-%hhu.%hhu.%hhu", registers[0] >> 8, registers[0] & 0xFF,
-                registers[1] >> 8, registers[1] & 0xFF, registers[2] >> 8, registers[2] & 0xFF);
+                registers[1] >> 8, static_cast<unsigned char>(registers[1] & 0xFF),
+                static_cast<unsigned char>(registers[2] >> 8), static_cast<unsigned char>(registers[2] & 0xFF));
     }
 
     // Production Year

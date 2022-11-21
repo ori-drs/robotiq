@@ -10,16 +10,8 @@
   <author email="hsu@osrfoundation.com">John Hsu</author>
   <buildtool_depend>catkin</buildtool_depend>
   <depend>roscpp</depend>
-  <depend>std_msgs</depend>
   <depend>sensor_msgs</depend>
-  <depend>geometry_msgs</depend>
-  <depend>trajectory_msgs</depend>
-  <depend>control_msgs</depend>
-  <depend>image_transport</depend>
-  <depend>tf</depend>
-  <depend>actionlib</depend>
   <depend>gazebo_plugins</depend>
-  <depend>gazebo_ros</depend>
   <depend>robotiq_3f_gripper_articulated_msgs</depend>
   <build_depend>gazebo</build_depend>
   <exec_depend>message_runtime</exec_depend>
