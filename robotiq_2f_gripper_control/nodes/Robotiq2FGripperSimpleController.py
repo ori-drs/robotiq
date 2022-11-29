@@ -133,7 +133,8 @@ def publisher():
     rospy.init_node("Robotiq2FGripperSimpleController")
 
     pub = rospy.Publisher(
-        "Robotiq2FGripperRobotOutput", outputMsg.Robotiq2FGripper_robot_output
+        "Robotiq2FGripperRobotOutput", outputMsg.Robotiq2FGripper_robot_output,
+        queue_size=10
     )
 
     command = outputMsg.Robotiq2FGripper_robot_output()
