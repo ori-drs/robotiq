@@ -11,7 +11,7 @@
             // Import this macro function
             <xacro:include filename="$(find robotiq_ft_sensor)/urdf/robotiq_ft300.urdf.xacro" />
 
-            // Instanciate sensor instance and connect it to robot flange
+            // Instantiate sensor instance and connect it to robot flange
             <xacro:robotiq_ft300 parent="robot_flange_link" prefix="">
                 <origin xyz="0 0 0" rpy="0 0 0"/>
             </xacro:robotiq_ft300>
