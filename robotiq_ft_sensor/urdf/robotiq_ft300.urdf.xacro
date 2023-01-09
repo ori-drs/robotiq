@@ -94,13 +94,39 @@
             - The X axis traces a symmetric line centered on the connector; the positive direction
                 points the opposite way away from the connector.
             - The Y axis uses the right hand thumb rule according to X-Z. -->
-        <joint name="${prefix}measurement_joint" type="fixed">
+        <!-- Defined as a revolute joint with no motion to enable force/torque sensing -->
+        <joint name="${prefix}measurement_joint" type="revolute">
             <origin xyz="0 0 0" rpy="0 ${pi} ${-pi/2}" />
             <parent link="${prefix}ft300_sensor" />
             <child link="${prefix}robotiq_ft_frame_id" />
+            <limit velocity="100.0" effort="300.0" lower="0" upper="0" />
         </joint>
 
         <link name="${prefix}robotiq_ft_frame_id"/>
+
+        <!-- Gazebo: Simulation of force-torque sensor -->
+        <gazebo reference="${prefix}measurement_joint">
+            <provideFeedback>true</provideFeedback>
+            <gravity>true</gravity>
+        </gazebo>
+        <gazebo>
+            <plugin name="ft_sensor" filename="libgazebo_ros_ft_sensor.so">
+                <updateRate>100.0</updateRate>
+                <topicName>${prefix}robotiq_ft_wrench</topicName>
+                <jointName>${prefix}measurement_joint</jointName>
+                <gaussianNoise>0.003</gaussianNoise>
+            </plugin>
+        </gazebo>
+        <transmission name="${prefix}measurement_joint_trans">
+            <type>transmission_interface/SimpleTransmission</type>
+            <joint name="${prefix}measurement_joint">
+            <!-- <hardwareInterface>hardware_interface/ForceTorqueSensorInterface</hardwareInterface> -->
+            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            </joint>
+            <actuator name="${prefix}measurement_joint_motor">
+                <mechanicalReduction>1</mechanicalReduction>
+            </actuator>
+        </transmission>
 
     </xacro:macro>
 </robot>
