@@ -5,7 +5,7 @@
 
 #include "robotiq_2f_gripper_action_server/robotiq_2f_gripper_action_server.h"
 
-// To keep the fully qualified names managable
+// To keep the fully qualified names manageable
 
 // Anonymous namespaces are file local -> sort of like global static objects
 namespace
@@ -14,7 +14,7 @@ using namespace robotiq_2f_gripper_action_server;
 
 /*  This struct is declared for the sole purpose of being used as an exception internally
     to keep the code clean (i.e. no output params). It is caught by the action_server and
-    should not propogate outwards. If you use these functions yourself, beware.
+    should not propagate outwards. If you use these functions yourself, beware.
 */
 struct BadArgumentsError
 {
