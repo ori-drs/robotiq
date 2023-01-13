@@ -17,7 +17,7 @@
             </xacro:robotiq_ft300>
         ```
     -->
-    <xacro:macro name="robotiq_ft300" params="parent prefix *origin">
+    <xacro:macro name="robotiq_ft300" params="parent prefix *origin gazebo:=false">
 
         <!-- mount the fts to the robot -->
         <joint name="${prefix}ft300_fix" type="fixed">
@@ -52,9 +52,6 @@
                 </geometry>
             </collision>
         </link>
-        <gazebo reference="${prefix}ft300_sensor">
-            <material>Gazebo/Black</material>
-        </gazebo>
 
         <!-- Link representing the FT300 mounting plate -->
         <link name="${prefix}ft300_mounting_plate">
@@ -77,9 +74,6 @@
                 </geometry>
             </collision>
         </link>
-        <gazebo reference="${prefix}ft300_mounting_plate">
-            <material>Gazebo/Black</material>
-        </gazebo>
 
          <!-- Connect force sensor with mounting/coupling plate -->
         <joint name="${prefix}ft300_mounting_plate_joint" type="fixed">
@@ -94,39 +88,60 @@
             - The X axis traces a symmetric line centered on the connector; the positive direction
                 points the opposite way away from the connector.
             - The Y axis uses the right hand thumb rule according to X-Z. -->
-        <!-- Defined as a revolute joint with no motion to enable force/torque sensing -->
-        <joint name="${prefix}measurement_joint" type="revolute">
-            <origin xyz="0 0 0" rpy="0 ${pi} ${-pi/2}" />
-            <parent link="${prefix}ft300_sensor" />
-            <child link="${prefix}robotiq_ft_frame_id" />
-            <limit velocity="100.0" effort="300.0" lower="0" upper="0" />
-        </joint>
+
+        <!-- Hardware: Fixed joint -->
+        <xacro:unless value="${gazebo}">
+            <joint name="${prefix}measurement_joint" type="fixed">
+                <origin xyz="0 0 0" rpy="0 ${pi} ${-pi/2}" />
+                <parent link="${prefix}ft300_sensor" />
+                <child link="${prefix}robotiq_ft_frame_id" />
+            </joint>
+        </xacro:unless>
+
+        <!-- Gazebo: Defined as a revolute joint with no motion to enable force/torque sensing -->
+        <xacro:if value="${gazebo}">
+            <joint name="${prefix}measurement_joint" type="revolute">
+                <origin xyz="0 0 0" rpy="0 ${pi} ${-pi/2}" />
+                <parent link="${prefix}ft300_sensor" />
+                <child link="${prefix}robotiq_ft_frame_id" />
+                <limit velocity="100.0" effort="300.0" lower="0" upper="0" />
+            </joint>
+        </xacro:if>
 
         <link name="${prefix}robotiq_ft_frame_id"/>
 
-        <!-- Gazebo: Simulation of force-torque sensor -->
-        <gazebo reference="${prefix}measurement_joint">
-            <provideFeedback>true</provideFeedback>
-            <gravity>true</gravity>
-        </gazebo>
-        <gazebo>
-            <plugin name="ft_sensor" filename="libgazebo_ros_ft_sensor.so">
-                <updateRate>100.0</updateRate>
-                <topicName>${prefix}robotiq_ft_wrench</topicName>
-                <jointName>${prefix}measurement_joint</jointName>
-                <gaussianNoise>0.003</gaussianNoise>
-            </plugin>
-        </gazebo>
-        <transmission name="${prefix}measurement_joint_trans">
-            <type>transmission_interface/SimpleTransmission</type>
-            <joint name="${prefix}measurement_joint">
-            <!-- <hardwareInterface>hardware_interface/ForceTorqueSensorInterface</hardwareInterface> -->
-            <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
-            </joint>
-            <actuator name="${prefix}measurement_joint_motor">
-                <mechanicalReduction>1</mechanicalReduction>
-            </actuator>
-        </transmission>
+        <!-- Gazebo settings -->
+        <xacro:if value="${gazebo}">
+            <gazebo reference="${prefix}ft300_sensor">
+                <material>Gazebo/Black</material>
+            </gazebo>
+            <gazebo reference="${prefix}ft300_mounting_plate">
+                <material>Gazebo/Black</material>
+            </gazebo>
+            <!-- Gazebo: Simulation of force-torque sensor -->
+            <gazebo reference="${prefix}measurement_joint">
+                <provideFeedback>true</provideFeedback>
+                <gravity>true</gravity>
+            </gazebo>
+            <gazebo>
+                <plugin name="ft_sensor" filename="libgazebo_ros_ft_sensor.so">
+                    <updateRate>100.0</updateRate>
+                    <topicName>${prefix}robotiq_ft_wrench</topicName>
+                    <jointName>${prefix}measurement_joint</jointName>
+                    <gaussianNoise>0.003</gaussianNoise>
+                </plugin>
+            </gazebo>
+            <transmission name="${prefix}measurement_joint_trans">
+                <type>transmission_interface/SimpleTransmission</type>
+                <joint name="${prefix}measurement_joint">
+                <!-- <hardwareInterface>hardware_interface/ForceTorqueSensorInterface</hardwareInterface> -->
+                <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+                </joint>
+                <actuator name="${prefix}measurement_joint_motor">
+                    <mechanicalReduction>1</mechanicalReduction>
+                </actuator>
+            </transmission>
+        </xacro:if>
 
     </xacro:macro>
 </robot>
