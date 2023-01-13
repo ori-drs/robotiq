@@ -16,8 +16,17 @@ using namespace robotiq_2f_gripper_action_server;
     to keep the code clean (i.e. no output params). It is caught by the action_server and
     should not propagate outwards. If you use these functions yourself, beware.
 */
-struct BadArgumentsError
+class BadArgumentsError : public std::exception
 {
+public:
+    BadArgumentsError(const std::string& message = "") : message_(message) {}
+    virtual ~BadArgumentsError() {}
+
+    virtual const char * what() const noexcept {
+        return message_.c_str();
+    }
+private:
+    std::string message_{};
 };
 
 GripperOutput goalToRegisterState(const GripperCommandGoal& goal, const Robotiq2FGripperParams& params)
@@ -32,14 +41,14 @@ GripperOutput goalToRegisterState(const GripperCommandGoal& goal, const Robotiq2
     {
         ROS_WARN("Goal gripper gap size is out of range(%f to %f): %f m", params.min_gap_, params.max_gap_,
                  goal.command.position);
-        throw BadArgumentsError();
+        throw BadArgumentsError("Goal gripper gap size out of range");
     }
 
     if (goal.command.max_effort < params.min_effort_ || goal.command.max_effort > params.max_effort_)
     {
         ROS_WARN("Goal gripper effort out of range (%f to %f N): %f N", params.min_effort_, params.max_effort_,
                  goal.command.max_effort);
-        throw BadArgumentsError();
+        throw BadArgumentsError("Goal gripper effort out of range");
     }
 
     double dist_per_tick = (params.max_gap_ - params.min_gap_) / 255;
@@ -122,9 +131,9 @@ void Robotiq2FGripperActionServer::goalCB()
         goal_reg_state_ = goalToRegisterState(current_goal, gripper_params_);
         goal_pub_.publish(goal_reg_state_);
     }
-    catch (BadArgumentsError& e)
+    catch (const BadArgumentsError& e)
     {
-        ROS_INFO("%s No goal issued to gripper", action_name_.c_str());
+        ROS_ERROR_STREAM("[" << action_name_ << "] No goal issued to gripper: " << e.what());
     }
 }
 
