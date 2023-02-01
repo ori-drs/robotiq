@@ -43,6 +43,7 @@ catkin_install_python(PROGRAMS
   nodes/Robotiq2FGripperTcpNode.py
   nodes/Robotiq2FGripperRtuNode.py
   nodes/Robotiq2FGripperJointStatePublisher.py
+  nodes/Robotiq2FGripperActivateGripper.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
