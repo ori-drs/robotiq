@@ -2,7 +2,7 @@
 
 <!-- Developed by: Daniel Ordonez 20.06.2019 - daniels.ordonez@gmail.com-->
 
-<robot xmlns:xacro="http://ros.org/wiki/xacro" name="robotiq_fts150">
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="robotiq_ft300">
 
     <!-- Macro function to instanciate URDF model of the FT300 force-torque sensor with mounting plate
 
@@ -17,7 +17,7 @@
             </xacro:robotiq_ft300>
         ```
     -->
-    <xacro:macro name="robotiq_ft300" params="parent prefix *origin gazebo:=false">
+    <xacro:macro name="robotiq_ft300" params="parent prefix *origin gazebo:=false ft_topic:=''">
 
         <!-- mount the fts to the robot -->
         <joint name="${prefix}ft300_fix" type="fixed">
@@ -126,7 +126,12 @@
             <gazebo>
                 <plugin name="ft_sensor" filename="libgazebo_ros_ft_sensor.so">
                     <updateRate>100.0</updateRate>
+                    <xacro:if value="${ft_topic!=''}">
+                    <topicName>${ft_topic}</topicName>
+                    </xacro:if>
+                    <xacro:if value="${ft_topic==''}">
                     <topicName>${prefix}robotiq_ft_wrench</topicName>
+                    </xacro:if>
                     <jointName>${prefix}measurement_joint</jointName>
                     <gaussianNoise>0.003</gaussianNoise>
                 </plugin>
