@@ -11,11 +11,22 @@ if __name__ == "__main__":
         latch=True
     )
 
-    rospy.sleep(0.5)
+    rospy.sleep(1.0)
+
+    print("Resetting and activating gripper")
+
+    command = outputMsg.Robotiq2FGripper_robot_output()
+    command.rACT = 0
+    pub.publish(command)
+    rospy.sleep(0.1)
 
     # Activate gripper
-    command = outputMsg.Robotiq2FGripper_robot_output()
     command.rACT = 1
+    command.rGTO = 1
+    command.rATR = 0
+    command.rPR = 0
+    command.rSP = 255
+    command.rFR = 150
     pub.publish(command)
 
     rospy.sleep(1.0)
