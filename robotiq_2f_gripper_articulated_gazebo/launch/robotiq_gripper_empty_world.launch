@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- startup simulated world -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" default="worlds/empty.world"/>
+    <arg name="paused" value="false"/>
+  </include>
+
+  <!-- upload gripper urdf to robot_description -->
+  <param name="robot_description" command="$(find xacro)/xacro $(find robotiq_2f_140_gripper_visualization)/urdf/robotiq_arg2f_140_model.xacro" />
+
+  <!-- Start the publisher for the left hand (the only hand) -->
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robotiq_gripper_robot_state_publisher">
+    <param name="publish_frequency" type="double" value="50.0" />
+    <remap from="joint_states" to="/joint_states" />
+  </node>
+
+  <!-- spawn in gazebo -->
+  <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model robot -z 0.1" respawn="false" output="screen" />
+</launch>
