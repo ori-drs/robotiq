@@ -211,6 +211,7 @@ bool RobotiqHandPlugin::VerifyField(const std::string& _label, int _min, int _ma
 bool RobotiqHandPlugin::VerifyCommand(
     const robotiq_3f_gripper_articulated_msgs::Robotiq3FGripperRobotOutput::ConstPtr& _command)
 {
+    // TODO: Copy-paste bugs in here - FIXME
     return this->VerifyField("rACT", 0, 1, _command->rACT) && this->VerifyField("rMOD", 0, 3, _command->rACT) &&
            this->VerifyField("rGTO", 0, 1, _command->rACT) && this->VerifyField("rATR", 0, 1, _command->rACT) &&
            this->VerifyField("rICF", 0, 1, _command->rACT) && this->VerifyField("rICS", 0, 1, _command->rACT) &&

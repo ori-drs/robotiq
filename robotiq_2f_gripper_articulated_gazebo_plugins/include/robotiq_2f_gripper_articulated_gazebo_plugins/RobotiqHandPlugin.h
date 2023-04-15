@@ -170,7 +170,7 @@ private:
     /// The three fingers can do abduction/adduction.
     /// Fingers 1 and 2 can do circumduction in one axis.
 private:
-    static const int NumJoints = 5;  // qqq
+    static const int NumJoints = 1;  // qqq
 
     /// \brief Velocity tolerance. Below this value we assume that the joint is
     /// stopped (rad/s).

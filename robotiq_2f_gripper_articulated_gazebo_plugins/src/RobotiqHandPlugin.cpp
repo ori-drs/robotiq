@@ -69,13 +69,11 @@ void RobotiqHandPlugin::Load(gazebo::physics::ModelPtr _parent, sdf::ElementPtr 
     if (!this->FindJoints())
         return;
 
-    gzlog << "Prior to iterating.." << std::endl;
     // Initialize joint state vector.
     this->jointStates.name.resize(this->jointNames.size());
     this->jointStates.position.resize(this->jointNames.size());
     this->jointStates.velocity.resize(this->jointNames.size());
     this->jointStates.effort.resize(this->jointNames.size());
-    gzlog << "About to iterate things.." << std::endl;
     for (size_t i = 0; i < this->jointNames.size(); ++i)
     {
         this->jointStates.name[i] = this->jointNames[i];
